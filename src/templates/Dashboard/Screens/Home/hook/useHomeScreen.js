@@ -1,49 +1,47 @@
-
 import { useEffect, useState } from 'react';
+
 import { database } from '@/services/firebase';
 import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUser } from '@/redux/userSlice';
+import { LogoutUser, selectUser } from '@/redux/userSlice';
 
 
-export const useHomeScreen = () => {
-    const [userData, setUser] = useState()
-    const [serviceData, setServiceData] = useState()
+export const useHomeScreen = ({ serviceData, loading }) => {
     const [tickets, setTickets] = useState()
-    const [loading, setLoading] = useState(true)
     const [dateLott, setDateLott] = useState('')
     const [hourLott, setHourLott] = useState('')
     const { userStore } = useSelector(selectUser);
-    
-    const valorPremio = serviceData?.valorPremio || '0000';
+    const dispatch = useDispatch()
+
+    const valorPremio = serviceData?.valorPremio || '0';
 
 
     function getTimeUTC(time) {
         const current = new Date();
         const dateFormat = new Date(time?.seconds * 1000);
 
-        function converNameMonth(number){
+        function converNameMonth(number) {
             switch (number) {
                 case 1:
                     return 'janeiro'
                     break;
-            
+
                 case 2:
                     return 'fevereiro'
                     break;
-            
+
                 case 3:
                     return 'março'
                     break;
-            
+
                 case 4:
                     return 'abril'
                     break;
-            
+
                 case 5:
                     return 'maio'
                     break;
-            
+
                 default:
                     break;
             }
@@ -51,7 +49,7 @@ export const useHomeScreen = () => {
 
         const convertDateCurrent = `${current.getDate()} de ${converNameMonth(current.getMonth())}`;
         const convertDateLottery = `${dateFormat.getDate()} de ${converNameMonth(dateFormat.getMonth())}`;
-        
+
         if (convertDateCurrent === convertDateLottery) {
             setDateLott('Hoje')
         } else {
@@ -60,36 +58,28 @@ export const useHomeScreen = () => {
         setHourLott(`${dateFormat.getHours()}:${Intl.NumberFormat("pt-BR", { minimumIntegerDigits: 2 }).format(dateFormat.getMinutes())}`)
     }
 
-
-    async function loadDataFirebase() {
+    async function loadTickets() {
         const getTicketsFromFirebase = []
-        const q = query(collection(database, "user"), where("uid", "==", userStore.uid ? userStore.uid : ''));
         const qTickets = collection(database, "/user/1qBsXTFqzSBNyif9ilQk/tickets");
-        const qService = collection(database, "DataService")
-        const userRef = await getDocs(q);
         const ticketRef = await getDocs(qTickets);
-        const serviceRef = await getDocs(qService);
 
-
-        userRef.forEach((doc) => {
-            setUser(doc.data())
-            setLoading(false)
-        });
-        serviceRef.forEach((doc) => {
-            setServiceData(doc.data())
-            setLoading(false)
-        });
         ticketRef.forEach((doc) => {
-            getTicketsFromFirebase.push({...doc.data()})
+            getTicketsFromFirebase.push({ ...doc.data() })
             setTickets(getTicketsFromFirebase)
-            setLoading(false)
+
+            console.log(tickets);
         })
     }
 
-    useEffect(() => {
-        loadDataFirebase()
-        getTimeUTC(serviceData?.dataProxSort)
-    }, [serviceData?.valorPremio])
+    function logoutUserSession() {
+        dispatch(LogoutUser())
+        localStorage.removeItem("userKey")
+    }
 
-    return { userData, loading, userStore, serviceData, valorPremio, dateLott, hourLott, tickets }
+    useEffect(() => {
+        loadTickets()
+        getTimeUTC(serviceData?.dataProxSort)
+    }, [serviceData?.valorPremio, userStore])
+
+    return { userStore, serviceData, valorPremio, dateLott, hourLott, tickets, logoutUserSession }
 }

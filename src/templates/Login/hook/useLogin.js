@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { signInWithPhoneNumber, RecaptchaVerifier, getAuth, updateProfile } from "firebase/auth";
 import { auth } from "../../../services/firebase";
-import { useDispatch, useSelector } from "react-redux";
-import { changeUser, selectUser } from "../../../redux/userSlice";
+import { useDispatch } from "react-redux";
+import { changeUser } from "../../../redux/userSlice";
 
 export const useLogin = () => {
     const [nameUser, setNameUser] = useState('')
@@ -36,7 +36,7 @@ export const useLogin = () => {
                 window.confirmationResult = confirmationResult;
                 setLoadingLogin(false)
                 setStepRegister(1)
-                console.log('Sended Code', stepRegister);
+                console.log('Sended Code');
             })
             .catch((error) => {
                 console.log(error);
@@ -53,14 +53,14 @@ export const useLogin = () => {
         window.confirmationResult.confirm(otp)
             .then(async (response) => {
                 const user = auth.currentUser;
-                console.log('Code verified');
-                console.log(response);
+                const dataUser = response.user
+                localStorage.setItem("userKey", JSON.stringify(dataUser));
 
                 if (response.user.displayName === null) {
                     setStepRegister(2)
                 }
                 else {
-                    dispatch(changeUser(response.user))
+                    dispatch(changeUser(dataUser))
                 }
                 setLoadingLogin(false)
             })
