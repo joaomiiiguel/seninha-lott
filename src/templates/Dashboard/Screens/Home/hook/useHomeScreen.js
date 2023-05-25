@@ -6,12 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { LogoutUser, selectUser } from '@/redux/userSlice';
 
 
-export const useHomeScreen = ({ serviceData, loading }) => {
+export const useHomeScreen = ({ serviceData }) => {
     const [tickets, setTickets] = useState()
     const [dateLott, setDateLott] = useState('')
     const [hourLott, setHourLott] = useState('')
     const { userStore } = useSelector(selectUser);
     const dispatch = useDispatch()
+    const [modalDetails, setModalDetails] = useState(false)
+    const [ticketSelected, setTicketSelected] = useState()
 
     const valorPremio = serviceData?.valorPremio || '0';
 
@@ -66,8 +68,6 @@ export const useHomeScreen = ({ serviceData, loading }) => {
         ticketRef.forEach((doc) => {
             getTicketsFromFirebase.push({ ...doc.data() })
             setTickets(getTicketsFromFirebase)
-
-            console.log(tickets);
         })
     }
 
@@ -76,10 +76,15 @@ export const useHomeScreen = ({ serviceData, loading }) => {
         localStorage.removeItem("userKey")
     }
 
+    function handleTicketSelected(data){
+        setModalDetails(true)
+        setTicketSelected(data)
+    }
+
     useEffect(() => {
         loadTickets()
         getTimeUTC(serviceData?.dataProxSort)
     }, [serviceData?.valorPremio, userStore])
 
-    return { userStore, serviceData, valorPremio, dateLott, hourLott, tickets, logoutUserSession }
+    return { modalDetails, setModalDetails, userStore, serviceData, valorPremio, dateLott, hourLott, tickets, logoutUserSession, ticketSelected, handleTicketSelected }
 }

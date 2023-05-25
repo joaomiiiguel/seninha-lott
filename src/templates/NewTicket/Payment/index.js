@@ -9,7 +9,7 @@ import QrCode from '../../../../public/QrCode.jpeg'
 export const PaymentPage = ({ setModalPayment, onClick }) => {
     const router = useRouter();
     return (
-        <div className="flex flex-col md:justify-around w-full h-screen mx-auto bg-amber-100 p-8 max-w-lg">
+        <div className="flex flex-col justify-start w-full h-screen mx-auto bg-amber-100 px-8 md:pt-8 max-w-lg space-y-4">
             <div className="flex flex-col ">
                 <div className="flex flex-row items-center justify-between">
                     <p className='text-lg font-bold tracking-wider text-green-900'>Como você quer fazer o pagamento?</p>
@@ -17,7 +17,7 @@ export const PaymentPage = ({ setModalPayment, onClick }) => {
                         <X size={20} />
                     </IconButtonComp>
                 </div>
-                <p className='text-xs text-green-900'>Aponte a camera para o QR Code ou copie o código para reazlizar o pagamento</p>
+                <p className='text-xs text-green-900 mt-4'>Aponte a camera para o QR Code ou copie o código para reazlizar o pagamento</p>
             </div>
 
             <div className="flex flex-col items-center mx-auto space-y-2 border-4 bg-gray-300 bg-opacity-30 border-green-800 p-4 rounded-lg">
@@ -27,7 +27,7 @@ export const PaymentPage = ({ setModalPayment, onClick }) => {
             </div>
 
             <div className="flex flex-col justify-center items-start space-y-2 text-green-800">
-                <div>
+                <div className="w-full flex flex-col justify-center items-center">
                     <p className='text-sm font-semibold'>Valor a ser pago</p>
                     <p className='text-4xl font-bold'>{Intl.NumberFormat("pt-BR", { style: "currency",currency: "BRL", }).format(5)}</p>
                 </div>
@@ -42,7 +42,7 @@ export const PaymentPage = ({ setModalPayment, onClick }) => {
             </div>
 
             <div className="mt-4">
-                <p className="text-xs w-full text-center text-green-800">Confirme o pagamento e aguarde ser processado.</p>
+                <p className="text-xs w-full text-center text-green-800">Confirme o pagamento e aguarde</p>
                 <ButtonDarkComp onClick={onClick}>Já paguei</ButtonDarkComp>
             </div>
 

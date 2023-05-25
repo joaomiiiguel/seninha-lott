@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { signInWithPhoneNumber, RecaptchaVerifier, getAuth, updateProfile } from "firebase/auth";
 import { auth } from "../../../services/firebase";
-import { useDispatch } from "react-redux";
-import { changeUser } from "../../../redux/userSlice";
+
+
+import { selectUser, changeUser } from "../../../redux/userSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from 'next/router';
 
 export const useLogin = () => {
     const [nameUser, setNameUser] = useState('')
@@ -12,6 +15,12 @@ export const useLogin = () => {
     const [loadingLogin, setLoadingLogin] = useState(false)
     const [otp, setOTP] = useState('')
     const dispatch = useDispatch();
+    const { isLogged } = useSelector(selectUser)
+    const router = useRouter();
+
+    if(isLogged){
+        router.push('/')
+    }
 
     function onCaptchVerify() {
         if (!window.recaptchaVerifier) {
@@ -53,15 +62,24 @@ export const useLogin = () => {
         window.confirmationResult.confirm(otp)
             .then(async (response) => {
                 const user = auth.currentUser;
-                const dataUser = response.user
+                const dataUser = {
+                    displayName: response.user.displayName,
+                    email: response.user.email,
+                    emailVerified: response.user.emailVerified,
+                    phoneNumber: response.user.phoneNumber,
+                    photoURL: response.user.photoURL,
+                    uid: response.user.uid ,
+                }
+                console.log(dataUser);
                 localStorage.setItem("userKey", JSON.stringify(dataUser));
 
-                if (response.user.displayName === null) {
+                if (response._tokenResponse.isNewUser === true) {
                     setStepRegister(2)
                 }
-                else {
-                    dispatch(changeUser(dataUser))
-                }
+
+                console.log(isLogged);
+                dispatch(changeUser(dataUser))
+                console.log(isLogged);
                 setLoadingLogin(false)
             })
             .catch((error) => {

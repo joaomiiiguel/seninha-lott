@@ -4,11 +4,15 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { LoginPage } from '@/templates/Login'
 import { DashboardPage } from '@/templates/Dashboard';
+import { useRouter } from 'next/router';
+import { useDataUser } from "@/hooks/useDataUser";
 
 
 export default function Home() {
   const { isLogged } = useSelector(selectUser)
+  const { userData } = useDataUser()
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     if (localStorage.getItem("userKey")) {
@@ -16,14 +20,18 @@ export default function Home() {
       const storedUser = JSON.parse(storedArray);
       dispatch(changeUser(storedUser))
     }
-  }, [])
+    if(userData.isAdmin){
+      router.push('/admin')
+    }
+  }, [isLogged])
+
 
   return (
     <main
       className={`flex flex-col items-center justify-start `}
     >
       {isLogged ?
-        <DashboardPage />
+        <DashboardPage userData={userData} />
         :
         <LoginPage />
       }

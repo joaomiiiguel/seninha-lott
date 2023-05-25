@@ -5,9 +5,10 @@ import { CardComp } from '@/components/Card'
 import { ChipComp } from '@/components/Chip'
 import { IconButtonComp } from '@/components/IconButton'
 import { CardTicket } from '@/components/CardTicket';
-
+import Modal from '@mui/material/Modal';
 import { useHomeScreen } from './hook/useHomeScreen';
 import Link from 'next/link';
+import { DetailsPage } from './Details';
 
 export default function HomeScreen({ userData, serviceData, loading }) {
     const {
@@ -16,8 +17,12 @@ export default function HomeScreen({ userData, serviceData, loading }) {
         dateLott,
         hourLott,
         tickets,
-        logoutUserSession
-    } = useHomeScreen({ serviceData, loading })
+        modalDetails,
+        setModalDetails,
+        logoutUserSession,
+        ticketSelected,
+        handleTicketSelected
+    } = useHomeScreen({ serviceData })
 
     return (
         <div className='flex flex-col pt-8 mb-24 space-y-4 justify-start items-center w-full' >
@@ -102,11 +107,20 @@ export default function HomeScreen({ userData, serviceData, loading }) {
                         :
                         tickets?.map((ticket, index) =>
                             <div className='w-full' key={index}>
-                                <CardTicket ticket={ticket} index={index} ticketLength={tickets?.length} />
+                                <CardTicket ticket={ticket} index={index} ticketLength={tickets?.length} onClickTicket={(e) => handleTicketSelected(ticket)} />
                             </div>
                         )
                 }
             </CardComp>
+
+            <Modal
+                open={modalDetails}
+                onClose={() => setModalDetails(false)}
+                aria-labelledby="modal-Details-title"
+                aria-describedby="modal-Details-description"
+            >
+                <DetailsPage ticket={ticketSelected} setModalDetails={setModalDetails}/>
+            </Modal>
         </div>
     )
 }

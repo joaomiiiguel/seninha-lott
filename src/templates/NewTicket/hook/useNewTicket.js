@@ -33,7 +33,6 @@ export const useNewTicket = () => {
         }
         else {
             setModalAlert(2)
-            
         }
     }
 

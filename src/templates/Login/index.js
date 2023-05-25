@@ -4,6 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 import Image from "next/image";
 
+
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 
@@ -13,7 +14,7 @@ import CapaImage from '../../../public/capa.webp'
 
 export const LoginPage = () => {
     const { nameUser, setNameUser, phone, setPhone, onSignIn, otp, setOTP, loadingLogin, onOTPVerify, stepRegister, lastStepRegister } = useLogin()
-    
+
     return (
         <div className="fixed bottom-0 flex flex-col w-screen h-screen items-center justify-center">
             <Image src={CapaImage} alt="Capa" className="fixed top-2 w-auto h-[30vh] max-w-sm" />

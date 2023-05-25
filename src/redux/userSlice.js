@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const slice = createSlice({
     name: 'user',
     initialState: {
-        userStore: '',
+        userStore: {},
         isLogged: false,
     },
     reducers:{
@@ -11,7 +11,7 @@ export const slice = createSlice({
             return {...state, isLogged: true, userStore: payload}
         },
         LogoutUser(state){
-            return {...state, isLogged: false, userStore: ''}
+            return {...state, isLogged: false, userStore: {}}
         }
     }
 })
