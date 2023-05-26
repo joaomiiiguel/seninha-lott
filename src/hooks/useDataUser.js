@@ -16,6 +16,7 @@ export const useDataUser = () => {
 
         userRef.forEach((doc) => {
             setUserData(doc.data())
+            console.log(userData);
         });
     }
 

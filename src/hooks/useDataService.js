@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { database } from '@/services/firebase';
 import { collection, getDocs } from "firebase/firestore";
-import { useRouter } from 'next/router';
-import { useSelector } from "react-redux";
-import { selectUser } from "../redux/userSlice";
+
 
 export const useDataService = () => {
     const [serviceData, setServiceData] = useState(null)

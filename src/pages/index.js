@@ -8,20 +8,18 @@ import { useRouter } from 'next/router';
 import { useDataUser } from "@/hooks/useDataUser";
 
 
+
+
 export default function Home() {
   const { isLogged } = useSelector(selectUser)
   const { userData } = useDataUser()
   const dispatch = useDispatch();
-  const router = useRouter();
 
   useEffect(() => {
     if (localStorage.getItem("userKey")) {
       const storedArray = localStorage.getItem("userKey")
       const storedUser = JSON.parse(storedArray);
       dispatch(changeUser(storedUser))
-    }
-    if(userData.isAdmin){
-      router.push('/admin')
     }
   }, [isLogged])
 
